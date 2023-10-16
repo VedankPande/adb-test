@@ -12,16 +12,20 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 
 # Mongo
 RUN ln -s /bin/echo /bin/systemctl
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
-RUN echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+RUN apt-get install gnupg curl
+RUN curl -fsSL https://pgp.mongodb.com/server-7.0.asc | gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
+RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+#RUN wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  apt-key add -
+#RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+#RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 RUN apt-get -y update
-RUN apt-get install -y mongodb-org
+RUN apt install -y mongodb-org
 
 # Install Yarn
 RUN apt-get install -y yarn
 
 # Install PIP
-RUN easy_install pip
+#RUN easy_install pip
 
 
 ENV ENV_TYPE staging
