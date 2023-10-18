@@ -1,13 +1,14 @@
-from django.shortcuts import render
+import os
+import json
+import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializer import TaskSerializer
 from utils.database import MongoDBDatabase
 from utils.json_encoder import JSONEncoder
-import json
-import logging
-import os
+
+
 
 
 class TodoListView(APIView):
