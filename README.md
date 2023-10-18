@@ -5,8 +5,6 @@ The following changes were made to the file structure to fix any bugs and follow
 * Splitting the dockerfiles decreased build runtime (removed unnecessary python package installation for `app` and `mongo` containers)
 * Moved `requirements.txt` into django folder (rest)
 
-We highly recommend you go through the setup in `Dockerfile` and `docker-compose.yml`. If you are able to understand and explain the setup, that will be a huge differentiator.
-
 # Setup
 1. Clone this repository 
 ```
@@ -24,12 +22,7 @@ sudo docker-compose build
 ```
 docker-compose up -d
 ```
-5. Once complete, `docker ps` should output something like this:
-```
-CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS         PORTS                      NAMES
-e445be7efa61   adbrew_test_api     "bash -c 'cd /src/re…"   3 minutes ago   Up 2 seconds   0.0.0.0:8000->8000/tcp     api
-0fd203f12d8a   adbrew_test_app     "bash -c 'cd /src/ap…"   4 minutes ago   Up 3 minutes   0.0.0.0:3000->3000/tcp     app
-884cb9296791   adbrew_test_mongo   "/usr/bin/mongod --b…"   4 minutes ago   Up 3 minutes   0.0.0.0:27017->27017/tcp   mongo
-```
+5. Run `docker ps` to check if the containers are running
+
 6. Check that you are able to access http://localhost:3000 and http://localhost:8000/api/v1/todos
 
