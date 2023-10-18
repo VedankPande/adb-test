@@ -16,8 +16,12 @@ function createTask({ task, refreshCallback, setTaskCallback }){
 }
 
 async function getTasks({ setTodoCallback }){
-    const res = await axios.get("http://localhost:8000/api/v1/todos/");
-    const data = res.data.map((task) => JSON.parse(task));
-    setTodoCallback(data);
+    try{
+      const res = await axios.get("http://localhost:8000/api/v1/todos/");
+      const data = res.data.map((task) => JSON.parse(task));
+      setTodoCallback(data);
+    } catch (err){
+      alert(err)
+    }
 }
 export { createTask, getTasks }
