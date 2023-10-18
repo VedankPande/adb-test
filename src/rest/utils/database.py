@@ -1,29 +1,32 @@
-import sys
-import os
 import logging
 from abc import ABC, abstractmethod
 
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, PyMongoError
 
+logger = logging.getLogger(__name__)
+
+
 class DatabaseInterface(ABC):
     """
     Abstract high level database interface
     """
-    
+
     @abstractmethod
     def disconnect(self):
         pass
+
 
 class NoSQLDatabaseInterface(DatabaseInterface):
     """
     Abstract NoSQL Database interface to be used by concrete 
     classes
     """
-    
+
     @abstractmethod
     def get_collection(self, collection_name: str):
         pass
+
 
 class MongoDBDatabase(NoSQLDatabaseInterface):
     """
@@ -35,10 +38,10 @@ class MongoDBDatabase(NoSQLDatabaseInterface):
             self.client = MongoClient(url)
             self.database = self.client[db_name]
         except ConnectionFailure as e:
-            logging.error(f"Error while connecting to MongoDB: {e}")
+            logger.error(f"Error while connecting to MongoDB: {e}")
         except PyMongoError as e:
-            logging.error(f"PyMongo error: {e}")
-        
+            logger.error(f"PyMongo error: {e}")
+
     def get_collection(self, collection_name: str):
         return self.database[collection_name]
 
