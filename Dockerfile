@@ -31,6 +31,8 @@ RUN apt-get install -y yarn
 ENV ENV_TYPE staging
 ENV MONGO_HOST mongo
 ENV MONGO_PORT 27017
+ENV DATABASE adb
+ENV TODO_COLLECTION todos
 ##########
 
 ENV PYTHONPATH=$PYTHONPATH:/src/
