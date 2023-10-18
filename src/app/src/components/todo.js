@@ -11,12 +11,8 @@ export default function Todo() {
 
   return (
     <div className="App">
-        <>
-          <h1> List of Todos </h1>
-          <TaskList refresh = {refresh}/>
-          <h1> Create a Todo </h1>
-          <CreateTask refreshCallback = {refreshData}/>
-        </>
+        <CreateTask refreshCallback = {refreshData}/>
+        <TaskList refresh = {refresh}/>
     </div>
   );
 }
