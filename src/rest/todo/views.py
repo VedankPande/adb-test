@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializer import TaskSerializer
-from utils.database import get_db_connection
+from utils.database import MongoDBDatabase
 from utils.json_encoder import JSONEncoder
 import json
 import logging
@@ -11,7 +11,22 @@ import os
 
 
 class TodoListView(APIView):
-    todo = get_db_connection()['todos']
+    """
+    description:
+    Restful API view to handle requests to the todo resource
+
+    get:
+    Return a list of all existing todos
+
+    post:
+    Create a new todo document
+    """
+
+    mongo_uri = 'mongodb://' + \
+        os.environ["MONGO_HOST"] + ':' + os.environ["MONGO_PORT"]
+
+    todo = MongoDBDatabase(mongo_uri, os.environ["DATABASE"]).get_collection(
+        os.environ["TODO_COLLECTION"])
 
     def get(self, request):
 
@@ -35,8 +50,7 @@ class TodoListView(APIView):
                 validated_data = serializer.validated_data
                 document = {"task": validated_data["task"]}
                 self.todo.insert_one(document)
-
-                return Response(data= json.dumps(document, cls=JSONEncoder), status=status.HTTP_201_CREATED)
+                return Response(data=json.dumps(document, cls=JSONEncoder), status=status.HTTP_201_CREATED)
 
             else:
 
