@@ -1,8 +1,7 @@
 version: '2'
 services:
   api:
-    build:
-      dockerfile: ./api.Dockerfile
+    build: src/rest
     container_name: api
     #command: tail -F anything
     command: bash -c "cd /src && python manage.py runserver 0.0.0.0:8000"
@@ -17,8 +16,7 @@ services:
       - mongo
 
   app:
-    build:
-      dockerfile: ./app.Dockerfile
+    build: src/app/
     container_name: app
     #command: tail -F anything
     command: bash -c "cd /src && yarn install && yarn start"
@@ -29,7 +27,7 @@ services:
 
   mongo:
     build:
-      dockerfile: ./mongo.Dockerfile
+      dockerfile: ./Dockerfile.mongo
     container_name: mongo
     restart: always
     ports:
