@@ -14,7 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
-    path('todos/', include('todo.urls'))
+    path('api/v1/', include('todo.urls')),
+    path('api/docs/', include_docs_urls(title="ADB Test"))
 ]
