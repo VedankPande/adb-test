@@ -1,34 +1,22 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import useTodos from "../hooks/useTodos";
+import TaskItem from "./taskItem";
 
 export default function TaskList(props) {
-  const [loading, setLoading] = useState(true);
-  const [todoData, setTodoData] = useState(null);
-
-  const fetchData = async (url) => {
-    const res = await axios.get(url);
-    const data = res.data.map((task) => JSON.parse(task));
-    setTodoData(data);
-    setLoading(false);
-  };
-
-  useEffect(async () => {
-    console.log("useEffect in taskList");
-    fetchData("http://localhost:8000/todos/");
-  }, [props.refresh]);
+  //custom hook to fetch all todos
+  const todos = useTodos({
+    refresh: props.refresh,
+  });
 
   return (
     <div>
-      {todoData &&
-        (loading ? (
-          "Loading"
-        ) : (
-          <div>
-            {todoData.map((task) => (
-              <div key={task._id}>{task.task}</div>
-            ))}
-          </div>
-        ))}
+      <h1>List of todos</h1>
+      {todos && (
+        <div>
+          {todos.map((task) => (
+            <TaskItem task={task} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
