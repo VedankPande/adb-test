@@ -2,7 +2,7 @@ import axios from "axios";
 
 function createTask({ task, refreshCallback, setTaskCallback }){
     axios
-    .post("http://localhost:8000/todos/", {
+    .post("http://localhost:8000/api/v1/todos/", {
       task: task,
     })
     .then((response) => {
@@ -15,8 +15,8 @@ function createTask({ task, refreshCallback, setTaskCallback }){
     });
 }
 
-async function getTasks({ url, setTodoCallback }){
-    const res = await axios.get(url);
+async function getTasks({ setTodoCallback }){
+    const res = await axios.get("http://localhost:8000/api/v1/todos/");
     const data = res.data.map((task) => JSON.parse(task));
     setTodoCallback(data);
 }

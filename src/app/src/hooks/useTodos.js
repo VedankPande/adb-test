@@ -6,7 +6,7 @@ const useTodos = ({ refresh }) => {
   const [todo, setTodo] = useState(null);
 
   useEffect(() => {
-    getTasks({ url: "http://localhost:8000/todos/", setTodoCallback: setTodo });
+    getTasks({ setTodoCallback: setTodo });
   }, [refresh]);
 
   return todo;
