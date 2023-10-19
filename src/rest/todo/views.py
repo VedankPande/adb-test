@@ -22,7 +22,6 @@ class TodoListView(APIView):
     Create a new todo document
     """
 
-    # TODO: Does this need to be a class variable or instance variable?
     mongo_uri = 'mongodb://' + \
         os.environ["MONGO_HOST"] + ':' + os.environ["MONGO_PORT"]
 

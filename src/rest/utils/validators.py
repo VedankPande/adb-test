@@ -32,8 +32,7 @@ class TodoCreateValidator(Validator):
 
         task = self.data.get("task", "")
 
-        # TODO: better checks?
-        if not task:
+        if len(task)==0:
             self.error = "Task is not present"
             return False
         self.validated_data = {"task": task}
