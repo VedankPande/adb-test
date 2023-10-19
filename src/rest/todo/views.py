@@ -1,14 +1,13 @@
 import os
-import json
-import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializer import TaskSerializer
+from utils.json_encoder import MongoDocumentJSONEncoder
 from utils.database import MongoDBDatabase
-from utils.json_encoder import JSONEncoder
-
-
+from utils.serializer import MongoDocumentSerializer
+from utils.validators import TodoCreateValidator, ValidationException
+from utils.decorators import validate
+from .services import MongoTodoService
 
 
 class TodoListView(APIView):
@@ -23,39 +22,35 @@ class TodoListView(APIView):
     Create a new todo document
     """
 
+    # TODO: Does this need to be a class variable or instance variable?
     mongo_uri = 'mongodb://' + \
         os.environ["MONGO_HOST"] + ':' + os.environ["MONGO_PORT"]
 
     todo = MongoDBDatabase(mongo_uri, os.environ["DATABASE"]).get_collection(
         os.environ["TODO_COLLECTION"])
 
+    mongoSerializer = MongoDocumentSerializer(encoder=MongoDocumentJSONEncoder)
+    mongoService = MongoTodoService(todo, serializer=mongoSerializer)
+
     def get(self, request):
 
         try:
-            todo_items = self.todo.find()
-            todo_objects = [json.dumps(item, cls=JSONEncoder)
-                            for item in todo_items]
-
-            return Response(data=todo_objects, status=status.HTTP_200_OK)
+            todo_documents = self.mongoService.get_all_todos()
+            return Response(data=todo_documents, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response(data={"error": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def post(self, request):
+    @validate(validator_class=TodoCreateValidator)
+    def post(self, request, *args, **kwargs):
 
-        serializer = TaskSerializer(data=request.data)
         try:
+            document = self.mongoService.create_todo(
+                kwargs.get("validated_data", ""))
 
-            if serializer.is_valid():
+            return Response(data=document, status=status.HTTP_201_CREATED)
 
-                validated_data = serializer.validated_data
-                document = {"task": validated_data["task"]}
-                self.todo.insert_one(document)
-                return Response(data=json.dumps(document, cls=JSONEncoder), status=status.HTTP_201_CREATED)
-
-            else:
-
-                return Response(data={"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
+        except ValidationException as e:
+            return Response(data={"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            return Response(data={"error": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
